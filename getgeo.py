@@ -59,26 +59,30 @@ def getFips(county,state):
 def getTiger(county):
   
   file_list = ['edges','areawater','arealm','pointlm','faces','tabblock','tabblock00','bg00','tract00','cousub','cousub00','taz00','vtd00','addrfn','addr','featnames','otherid','facesah','facesal']
-  print "Retrieving Tiger data for " + county['county'] + " County in " + county['state']
+  #file_list = ['edges']
+  print "----------Retrieving Tiger data for " + county['county'] + " County in " + county['state']
   for i in file_list:  
-    url = "http://www2.census.gov/geo/tiger/TIGER2009/%s_%s/%s_%s_County/tl_2009_%s_%s.zip" % (county['state_fips'],county['state_clean'],county['county_fips'],county['county_clean'],county['county_fips'],i)
+    if county['state_code'] <> 'LA':
+      url = "http://www2.census.gov/geo/tiger/TIGER2009/%s_%s/%s_%s_County/tl_2009_%s_%s.zip" % (county['state_fips'],county['state_clean'],county['county_fips'],county['county_clean'],county['county_fips'],i)
+    else:
+      url = "http://www2.census.gov/geo/tiger/TIGER2009/%s_%s/%s_%s_Parish/tl_2009_%s_%s.zip" % (county['state_fips'],county['state_clean'],county['county_fips'],county['county_clean'],county['county_fips'],i)
     print "File: tiger_%s" % i
     print url
-    os.system('curl %s > %s_%s_%s.zip' % (url,county['county_clean'],county['state_code'],i))
+    os.system('curl -silent %s > %s_%s_%s.zip' % (url,county['county_clean'],county['state_code'],i))
     os.system('sudo chown $USER %s_%s_%s.zip' % (county['county_clean'],county['state_code'],i))
     os.system('unzip %s_%s_%s.zip -d %s_%s' % (county['county_clean'],county['state_code'],i,county['county_clean'],county['state_code']))
     os.system('rm %s_%s_%s.zip' % (county['county_clean'],county['state_code'],i))
-#http://www2.census.gov/geo/tiger/TIGER2009/06_CALIFORNIA/06001_Alameda_County/tl_2009_06001_edges.zip
 
 def get_osm(x,y,county):
   box_width = .25
+  print "----------Gathering largest possible OSM bounding box around point."
   while box_width > 0:
     print "Attempting %s degree box." % (box_width * 2)
     url = "http://api.openstreetmap.org/api/0.6/map?bbox=%s,%s,%s,%s" % (float(x)-box_width,float(y)-box_width,float(x)+box_width,float(y)+box_width)
     #print 'curl %s > ./%s_%s/%s_%s_osm.xml' % (url,county['county_clean'],county['state_code'],county['county_clean'],county['state_code'])
-    os.system('curl %s > ./%s_%s/%s_%s_osm.xml' % (url,county['county_clean'],county['state_code'],county['county_clean'],county['state_code']))
+    os.system('curl -silent %s > ./%s_%s/%s_%s_osm.xml' % (url,county['county_clean'],county['state_code'],county['county_clean'],county['state_code']))
     f = open('./%s_%s/%s_%s_osm.xml' % (county['county_clean'],county['state_code'],county['county_clean'],county['state_code']))
-    if len(f.readlines()) == 1:
+    if len(f.readlines()) < 10:
       print "Too many nodes.  Retrying."
     else:
       break
@@ -105,13 +109,15 @@ def main():
         state = f['name']
     
     county_info = getFips(county,state)
-    #print county_info
-    #try:
-    #  getTiger(county_info)
-    #except UnboundLocalError:
-    #  print "County/state pair not found.  Check coordinates."
-    #  sys.exit(1)
-    get_osm(lng,lat,county_info)
+    os.system('rm -rf %s_%s' % (county_info['county_clean'],county_info['state_code']))
+    os.system('mkdir %s_%s' % (county_info['county_clean'],county_info['state_code']))
+    print county_info
+    try:
+      getTiger(county_info)
+    except UnboundLocalError:
+      print "County/state pair not found.  Check coordinates."
+      sys.exit(1)
+    #get_osm(lng,lat,county_info)
   else:
     # Check if a county and state have been passed
     if len(sys.argv)<3:
