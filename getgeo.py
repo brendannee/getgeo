@@ -107,26 +107,25 @@ def main():
         county = f['name']
       elif f['classifiers'][0]['subcategory'] == 'State':
         state = f['name']
-    
-    county_info = getFips(county,state)
-    os.system('rm -rf %s_%s' % (county_info['county_clean'],county_info['state_code']))
-    os.system('mkdir %s_%s' % (county_info['county_clean'],county_info['state_code']))
-    print county_info
-    try:
-      getTiger(county_info)
-    except UnboundLocalError:
-      print "County/state pair not found.  Check coordinates."
-      sys.exit(1)
     #get_osm(lng,lat,county_info)
   else:
     # Check if a county and state have been passed
     if len(sys.argv)<3:
       print 'Missing second argument for Coordinates.  Please enter a Count Name and State abbreviation or a latitide longitude pair ex: "La Crosse" WI or 37.775 -122.4183333'
       sys.exit(1)
-      
     county = sys.argv[1]
     state = sys.argv[2]
-    getTiger(county,state)
+  
+  
+  county_info = getFips(county,state)
+  os.system('rm -rf %s_%s' % (county_info['county_clean'],county_info['state_code']))
+  os.system('mkdir %s_%s' % (county_info['county_clean'],county_info['state_code']))
+  print county_info
+  try:
+    getTiger(county_info)
+  except UnboundLocalError:
+    print "County/state pair not found.  Check coordinates."
+    sys.exit(1)  
 
 if __name__ == '__main__':
   main()
