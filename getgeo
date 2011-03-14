@@ -1,2 +1,2 @@
-#/bin/bash
-python ~/.getgeo/getgeo.py $1 $2
+#!/bin/bash
+python ~/.getgeo/getgeo.py "$1" "$2"
