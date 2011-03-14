@@ -43,18 +43,21 @@ def getFips(county,state):
     if re.sub(' ','_',c[1].lower()) == county_clean.lower() and state_fips == c[0][:2]:
       county_fips = c[0]
   try:
-    print "County fips code: %s" % county_fips
+    print "County found: %s, %s Fips code: %s" % (county, state, county_fips)
+    
+    output['county_fips'] = county_fips
+    output['county_clean'] = county_clean
+    output['county'] = county
+    output['state'] = state.title()
+    output['state_fips'] = state_fips
+    output['state_code'] = state_code
+    output['state_clean'] = state_clean
+    return output
   except UnboundLocalError:
-    print 'County name not found for "'+county+', '+state+'".  Please try again.'
-    sys.exit(1)
-  output['county_fips'] = county_fips
-  output['county_clean'] = county_clean
-  output['county'] = county
-  output['state'] = state
-  output['state_fips'] = state_fips
-  output['state_code'] = state_code
-  output['state_clean'] = state_clean
-  return output
+    print 'County name not found for "'+county+', '+state+'".'
+    return 'false'
+
+  
     
 def getTiger(county):
   
@@ -85,44 +88,66 @@ def get_osm(x,y,county):
     if len(f.readlines()) < 10:
       print "Too many nodes.  Retrying."
     else:
+      print "Sucessfully downloaded OSM %s box" % (box_width * 2)
       break
     box_width = box_width - .01
 
 def main():
+  # strip off trailing comma of first argument
+  sys.argv[1] = re.sub(',','',sys.argv[1])
+  
+  #Setup simplegeo client
+  config = ConfigParser.RawConfigParser()
+  config.read('keys.cfg')
+  client = simplegeo.context.Client(config.get('SimpleGeo', 'simplegeokey'), config.get('SimpleGeo', 'simplegeosecret'))
+  
   # Check if number to see if a coordinate
   if is_number(sys.argv[1]):
     if len(sys.argv)<3:
-      print 'Missing second argument for Coordinates.  Please enter a Count Name and State abbreviation or a latitide longitude pair ex: "La Crosse" WI or 37.775 -122.4183333'
+      print 'Missing second argument for Coordinates.  Please enter a County Name and State abbreviation or a latitide longitude pair ex: "New Orleans" LA or 37.775 -122.4183333'
       sys.exit(1)
     lat = float(sys.argv[1])
     lng = float(sys.argv[2])
-
-    config = ConfigParser.RawConfigParser()
-    config.read('keys.cfg')
-
-    client = simplegeo.context.Client(config.get('SimpleGeo', 'simplegeokey'), config.get('SimpleGeo', 'simplegeosecret'))
+    
+    # Get info from SimpleGeo
     context = client.get_context(lat,lng)
     for f in context['features']:
       if f['classifiers'][0]['subcategory'] == 'County':
         county = f['name']
       elif f['classifiers'][0]['subcategory'] == 'State':
         state = f['name']
-    #get_osm(lng,lat,county_info)
   else:
     # Check if a county and state have been passed
     if len(sys.argv)<3:
-      print 'Missing second argument for Coordinates.  Please enter a Count Name and State abbreviation or a latitide longitude pair ex: "La Crosse" WI or 37.775 -122.4183333'
+      print 'Missing second argument for State.  Please enter a County Name and State abbreviation or a latitide longitude pair ex: "New Orleans" LA or 37.775 -122.4183333'
       sys.exit(1)
     county = sys.argv[1]
     state = sys.argv[2]
   
-  
   county_info = getFips(county,state)
+  
+  #Check to see if a valid county was passed, if not check if its a city, state
+  if county_info == 'false':
+    # Get info from SimpleGeo
+    context = client.get_context_by_address(sys.argv[1] + ', ' + sys.argv[2])
+    for f in context['features']:
+      if f['classifiers'][0]['subcategory'] == 'County':
+        county = f['name']
+      elif f['classifiers'][0]['subcategory'] == 'State':
+        state = f['name']
+    
+    county_info = getFips(county,state)
+    
+  if county_info == 'false':
+    print "County/state pair not found.  Check coordinates."
+    sys.exit(1)
+    
+  # Remove any existing county info and make new directory
   os.system('rm -rf %s_%s' % (county_info['county_clean'],county_info['state_code']))
   os.system('mkdir %s_%s' % (county_info['county_clean'],county_info['state_code']))
-  print county_info
   try:
     getTiger(county_info)
+    get_osm(lng,lat,county_info)
   except UnboundLocalError:
     print "County/state pair not found.  Check coordinates."
     sys.exit(1)  
