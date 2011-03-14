@@ -11,19 +11,20 @@ Installation Notes
 - [Install simplegeo.context python client](http://simplegeo.com/docs/clients-code-libraries/python#installation-and-requirements)
 - [Get a SimpleGeo API key](http://simplegeo.com/signup/)
 - Put the SimpleGeo  OAuth Key and SecretKey in the file keys_sample.cfg and rename it to keys.cfg
+- To install getgeo run $ sudo sh deploy.sh - this copies it to your path and puts the getgeo files somewhere
 
 
 Example Usage
 ----------------------------
 
 #### Coordinates
-$ python getgeo.py 36.5678 -120.678
+$ getgeo 36.5678 -120.678
 
 #### City and State
-$ python getgeo.py Boston MA
+$ getgeo Boston MA
 
 #### County and State
-$ python getgeo.py Alameda CA
+$ getgeo Alameda CA
 
 
 APIs used
