@@ -54,6 +54,7 @@ geogeo will create a folder with the county name containing the location specifi
 - Tiger Topological Faces-Area Hydrography Relationship File Shapefile
 - Tiger Topological Faces-Area Landmark Relationship File Shapefile
 - OSM Map Data
+- SimpleGeo Context API JSON response
 
 
 Credits
