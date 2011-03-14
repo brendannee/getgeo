@@ -93,9 +93,6 @@ def get_osm(x,y,county_info):
     box_width = box_width - .01
 
 def main():
-  if (sys.argv[1] == ''):
-    print "usage: \n%s" % usage
-    sys.exit(1)  
   
   # strip off trailing comma of first argument
   sys.argv[1] = re.sub(',','',sys.argv[1])
@@ -103,7 +100,15 @@ def main():
   #Setup simplegeo client
   config = ConfigParser.RawConfigParser()
   config.read('keys.cfg')
-  client = simplegeo.context.Client(config.get('SimpleGeo', 'simplegeokey'), config.get('SimpleGeo', 'simplegeosecret'))
+  try:
+    client = simplegeo.context.Client(config.get('SimpleGeo', 'simplegeokey'), config.get('SimpleGeo', 'simplegeosecret'))
+  except ConfigParser.NoSectionError:
+    print "error: Cannot find file keys.cfg with valid SimpleGeo Keys.  Please add your SimpleGeo API keys to keys.cfg and run the deploy script again"
+    sys.exit(1)
+    
+  if (sys.argv[1] == ''):
+    print "usage: \n%s" % usage
+    sys.exit(1)
   
   # Check if number to see if a coordinate
   if is_number(sys.argv[1]):
