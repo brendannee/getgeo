@@ -1,3 +1,2 @@
 #/bin/bash
-
-python /Library/Python/2.6/site-packages/getgeo/getgeo.py $1 $2
+python ~/.getgeo/getgeo.py $1 $2
