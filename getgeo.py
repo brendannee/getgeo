@@ -6,11 +6,13 @@ getgeo.py
 Created by Jedidiah Horne on 2011-02-26.
 Copyright (c) 2011 __BlinkTag Inc__. All rights reserved.
 """
+usage =  """$ getgeo [latitude] [longitude]\nOR\n$ getgeo [County] [State]\nOR\n$ getgeo [City] [State]\n\nExamples:\n$ getgeo 36.5678 -120.678\n$ getgeo "New Orleans" LA\n$ getgeo Alameda CA"""
 
 import sys
 import os
 import csv
 import re
+import simplejson
 import ConfigParser
 import simplegeo.context
 
@@ -92,6 +94,10 @@ def get_osm(x,y,county_info):
     box_width = box_width - .01
 
 def main():
+  if (len(sys.argv) <= 1):
+    print "Missing Arguments: \n%s" % usage
+    sys.exit(1)  
+  
   # strip off trailing comma of first argument
   sys.argv[1] = re.sub(',','',sys.argv[1])
   
@@ -110,28 +116,25 @@ def main():
     
     # Get info from SimpleGeo
     context = client.get_context(lat,lng)
-    for f in context['features']:
-      if f['classifiers'][0]['subcategory'] == 'County':
-        county = f['name']
-      elif f['classifiers'][0]['subcategory'] == 'State':
-        state = f['name']
-    lat = context['query']['latitude']
-    lng = context['query']['longitude']
+
   else:
     # Check if a county and state have been passed or city and state
     if len(sys.argv)<3:
       print 'Missing second argument for State.  Please enter a County Name and State abbreviation or a latitide longitude pair ex: "New Orleans" LA or 37.775 -122.4183333'
       sys.exit(1)
     
+    print sys.argv
     # Get info from SimpleGeo
     context = client.get_context_by_address(sys.argv[1] + ', ' + sys.argv[2])
-    for f in context['features']:
-      if f['classifiers'][0]['subcategory'] == 'County':
-        county = f['name']
-      elif f['classifiers'][0]['subcategory'] == 'State':
-        state = f['name']
-    lat = context['query']['latitude']
-    lng = context['query']['longitude']
+  
+  # Loop through SimpleGeo Results
+  for f in context['features']:
+    if f['classifiers'][0]['subcategory'] == 'County':
+      county = f['name']
+    elif f['classifiers'][0]['subcategory'] == 'State':
+      state = f['name']
+  lat = context['query']['latitude']
+  lng = context['query']['longitude']
   
   county_info = getFips(county,state)
   
@@ -143,6 +146,10 @@ def main():
   os.system('rm -rf %s_%s' % (county_info['county_clean'],county_info['state_code']))
   os.system('mkdir %s_%s' % (county_info['county_clean'],county_info['state_code']))
   try:
+    # Save SimpleGeo response
+    f = open('./%s_%s/%s_%s_simple_geo.json' % (county_info['county_clean'],county_info['state_code'],county_info['county_clean'],county_info['state_code']), 'w')
+    f.write(simplejson.dumps(context, f, use_decimal=True))
+    
     getTiger(county_info)
     get_osm(lng,lat,county_info)
   except UnboundLocalError:
