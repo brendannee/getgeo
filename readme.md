@@ -11,7 +11,7 @@ Installation Notes
 - [Install simplegeo.context python client](http://simplegeo.com/docs/clients-code-libraries/python#installation-and-requirements)
 - [Get a SimpleGeo API key](http://simplegeo.com/signup/)
 - Put the SimpleGeo  OAuth Key and SecretKey in the file keys_sample.cfg and rename it to keys.cfg
-- To install getgeo run $ sudo sh deploy.sh - this copies it to your path and puts the getgeo files somewhere
+- To install getgeo run $ sudo sh deploy.sh - this copies it to your path and puts the getgeo files somewhere so you can execute "getgeo" at the command line
 
 
 Example Usage
@@ -21,7 +21,7 @@ Example Usage
 $ getgeo 36.5678 -120.678
 
 #### City and State
-$ getgeo Boston MA
+$ getgeo "New Orleans" LA
 
 #### County and State
 $ getgeo Alameda CA
@@ -59,8 +59,8 @@ geogeo will create a folder with the county name containing the location specifi
 Credits
 ----------------------------
 
-Jedidiah Horne jed@blinktag.com
-Brendan Nee brendan@blinktag.com
+#### Jedidiah Horne jed@blinktag.com
+#### Brendan Nee brendan@blinktag.com
 
 License 
 ----------------------------
