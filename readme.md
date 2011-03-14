@@ -9,15 +9,16 @@ Installation Notes
 ----------------------------
 
 * Download getgeo [.zip](https://github.com/brendannee/getgeo/zipball/master) [.tar.gz](https://github.com/brendannee/getgeo/tarball/master)
-* [Install simplegeo.context python client](http://simplegeo.com/docs/clients-code-libraries/python#installation-and-requirements)
-  * If you are on OS X you can do this by running:
+* Install the [simplegeo.context python client](http://simplegeo.com/docs/clients-code-libraries/python#installation-and-requirements) - If you are on OS X you can do this by running:
 
       easy_install simplegeo-context
 * [Get a SimpleGeo API key](http://simplegeo.com/signup/)
-* Put the SimpleGeo  OAuth Key and SecretKey in the file keys_sample.cfg
-* Rename keys_sample.cfg to keys.cfg
-* To install getgeo run $ sudo sh deploy.sh - this copies it to your path and puts the getgeo files somewhere
-* Its installed!  Run:
+* Put the SimpleGeo  OAuth Key and SecretKey in the file `keys_sample.cfg`
+* Rename `keys_sample.cfg` to `keys.cfg`
+* Run the deploy script - this copies `getgeo` to your path and puts the getgeo files somewhere
+
+      sudo sh deploy.sh
+* Its installed!  Run it:
 
       getgeo
 
