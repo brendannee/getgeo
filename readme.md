@@ -8,10 +8,12 @@ For OSM data, it tries to get data for the largest possible bounding box around 
 Installation Notes
 ----------------------------
 
-- [Install simplegeo.context python client](http://simplegeo.com/docs/clients-code-libraries/python#installation-and-requirements)
-- [Get a SimpleGeo API key](http://simplegeo.com/signup/)
-- Put the SimpleGeo  OAuth Key and SecretKey in the file keys_sample.cfg and rename it to keys.cfg
-- To install getgeo run $ sudo sh deploy.sh - this copies it to your path and puts the getgeo files somewhere so you can execute "getgeo" at the command line
+* [Install simplegeo.context python client](http://simplegeo.com/docs/clients-code-libraries/python#installation-and-requirements)
+  * If you are on OS X you can do this by running:
+  * $ easy_install simplegeo-context
+* [Get a SimpleGeo API key](http://simplegeo.com/signup/)
+* Put the SimpleGeo  OAuth Key and SecretKey in the file keys_sample.cfg and rename it to keys.cfg
+* To install getgeo run $ sudo sh deploy.sh - this copies it to your path and puts the getgeo files somewhere so you can execute "getgeo" at the command line
 
 
 Example Usage

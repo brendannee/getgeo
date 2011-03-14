@@ -83,13 +83,12 @@ def get_osm(x,y,county_info):
   while box_width > 0:
     print "Attempting %s degree box" % (box_width * 2)
     url = "http://api.openstreetmap.org/api/0.6/map?bbox=%s,%s,%s,%s" % (float(x)-box_width,float(y)-box_width,float(x)+box_width,float(y)+box_width)
-    #print 'curl %s > ./%s_%s/%s_%s_osm.xml' % (url,county_info['county_clean'],county_info['state_code'],county_info['county_clean'],county_info['state_code'])
-    os.system('curl -silent %s > ./%s_%s/%s_%s_osm.xml' % (url,county_info['county_clean'],county_info['state_code'],county_info['county_clean'],county_info['state_code']))
+    os.system('curl %s > ./%s_%s/%s_%s_osm.xml' % (url,county_info['county_clean'],county_info['state_code'],county_info['county_clean'],county_info['state_code']))
     f = open('./%s_%s/%s_%s_osm.xml' % (county_info['county_clean'],county_info['state_code'],county_info['county_clean'],county_info['state_code']))
     if len(f.readlines()) < 10:
       print "Too many nodes.  Retrying..."
     else:
-      print "Sucessfully downloaded OSM %s box around %s county, %s" % (box_width * 2, county_info['county_clean'], county_info['state_code'])
+      print "Sucessfully downloaded OSM %s box around %s County, %s" % (box_width * 2, county_info['county_clean'], county_info['state_code'])
       break
     box_width = box_width - .01
 
@@ -123,7 +122,6 @@ def main():
       print 'Missing second argument for State.  Please enter a County Name and State abbreviation or a latitide longitude pair ex: "New Orleans" LA or 37.775 -122.4183333'
       sys.exit(1)
     
-    print sys.argv
     # Get info from SimpleGeo
     context = client.get_context_by_address(sys.argv[1] + ', ' + sys.argv[2])
   
@@ -146,8 +144,8 @@ def main():
   os.system('rm -rf %s_%s' % (county_info['county_clean'],county_info['state_code']))
   os.system('mkdir %s_%s' % (county_info['county_clean'],county_info['state_code']))
   try:
-    # Save SimpleGeo response
-    f = open('./%s_%s/%s_%s_simple_geo.json' % (county_info['county_clean'],county_info['state_code'],county_info['county_clean'],county_info['state_code']), 'w')
+    # Save SimpleGeo Context response
+    f = open('./%s_%s/%s_%s_simplegeo_context.json' % (county_info['county_clean'],county_info['state_code'],county_info['county_clean'],county_info['state_code']), 'w')
     f.write(simplejson.dumps(context, f, use_decimal=True))
     
     getTiger(county_info)
