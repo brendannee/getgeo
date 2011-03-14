@@ -6,7 +6,7 @@ getgeo.py
 Created by Jedidiah Horne on 2011-02-26.
 Copyright (c) 2011 __BlinkTag Inc__. All rights reserved.
 """
-usage =  """$ getgeo [latitude] [longitude]\nOR\n$ getgeo [County] [State]\nOR\n$ getgeo [City] [State]\n\nExamples:\n$ getgeo 36.5678 -120.678\n$ getgeo "New Orleans" LA\n$ getgeo Alameda CA"""
+usage =  """\tgetgeo [latitude] [longitude]\n\tgetgeo [County] [State]\n\tgetgeo [City] [State]\n\nExamples:\n\tgetgeo 36.5678 -120.678\n\tgetgeo "New Orleans" LA\n\tgetgeo Alameda CA"""
 
 import sys
 import os
@@ -93,8 +93,8 @@ def get_osm(x,y,county_info):
     box_width = box_width - .01
 
 def main():
-  if (len(sys.argv) <= 1):
-    print "Missing Arguments: \n%s" % usage
+  if (sys.argv[1] == ''):
+    print "usage: \n%s" % usage
     sys.exit(1)  
   
   # strip off trailing comma of first argument
