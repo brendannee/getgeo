@@ -11,8 +11,9 @@ import sys
 import os
 import csv
 import re
-import simplegeo.context
 import ConfigParser
+import simplegeo.context
+
 
 def is_number(s):
     try:
@@ -59,7 +60,7 @@ def getFips(county,state):
 
 def getTiger(county_info):
   
-  file_list = ['edges','areawater','arealm','pointlm','faces','tabblock','tabblock00','bg00','tract00','cousub','cousub00','taz00','vtd00','addrfn','addr','featnames','otherid','facesah','facesal']
+  file_list = ['edges','areawater','arealm','pointlm','faces','tabblock10','tabblock00','bg10','bg00','tract10','tract00','cousub10','cousub00','vtd10','vtd00','addrfn','addr','featnames','otherid','facesah','facesal']
   #file_list = ['edges']
   print "----------Retrieving Tiger data for " + county_info['county'] + " County in " + county_info['state']
   for i in file_list:  
