@@ -99,7 +99,7 @@ def main():
   
   #Setup simplegeo client
   config = ConfigParser.RawConfigParser()
-  config.read('keys.cfg')
+  config.read('./keys.cfg')
   try:
     client = simplegeo.context.Client(config.get('SimpleGeo', 'simplegeokey'), config.get('SimpleGeo', 'simplegeosecret'))
   except ConfigParser.NoSectionError:

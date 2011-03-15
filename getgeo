@@ -1,2 +1,3 @@
 #!/bin/bash
-python ~/.getgeo/getgeo.py "$1" "$2"
+cd ~/.getgeo
+python ./getgeo.py "$1" "$2"
